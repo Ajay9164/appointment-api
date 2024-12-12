@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book an Appointment</title>
+</head>
+<body>
+  <h1>Book an Appointment</h1>
+  <form id="appointmentForm">
+    <label for="fullName">Full Name</label><br>
+    <input type="text" id="fullName" name="fullName" required><br><br>
+
+    <label for="email">Email Address</label><br>
+    <input type="email" id="email" name="email" required><br><br>
+
+    <label for="phone">Phone Number</label><br>
+    <input type="text" id="phone" name="phone" required><br><br>
+
+    <label for="appointmentDate">Preferred Appointment Date</label><br>
+    <input type="date" id="appointmentDate" name="appointmentDate" required><br><br>
+
+    <label for="message">Additional Message</label><br>
+    <textarea id="message" name="message"></textarea><br><br>
+
+    <button type="submit">Book Appointment</button>
+  </form>
+
+  <script>
+    const form = document.getElementById('appointmentForm');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = {
+        fullName: document.getElementById('fullName').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        appointmentDate: document.getElementById('appointmentDate').value,
+        message: document.getElementById('message').value,
+      };
+
+      try {
+        const response = await fetch('http://localhost:3000/api/book-appointment', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData),
+        });
+        const result = await response.json();
+        alert(result.message);  // Display the success message
+      } catch (err) {
+        alert('Error submitting appointment');
+      }
+    });
+  </script>
+</body>
+</html>
