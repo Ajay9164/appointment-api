@@ -1,24 +1,21 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const cors = require('cors'); // Import CORS
+const cors = require('cors'); 
 
 const app = express();
 const PORT = 3000;
 
-// Use CORS middleware
-app.use(cors());
 
-// MongoDB Connection
-mongoose.connect('mongodb://localhost:27017/appointmentDB', {
+app.use(cors()); // This will allow requests from all origins
+
+// MongoDB Connection (Local)
+mongoose.connect('mongodb+srv://doadmin:J1432Q0mwr95id6U@appointment-db-c887a00a.mongo.ondigitalocean.com', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
-  .then(() => console.log('Connected to MongoDB'))
+  .then(() => console.log('Connected to MongoDB locally'))
   .catch((err) => console.error('Error connecting to MongoDB:', err));
-
-// Your existing code...
-
 
 // Appointment Schema
 const appointmentSchema = new mongoose.Schema({
@@ -35,7 +32,7 @@ const Appointment = mongoose.model('Appointment', appointmentSchema);
 // Middleware
 app.use(bodyParser.json());
 
-// API Endpoint: Book an Appointment
+// API Endpoint: Book an Appointment (POST)
 app.post('/api/book-appointment', async (req, res) => {
   const { fullName, email, phone, appointmentDate, message } = req.body;
 
@@ -59,6 +56,17 @@ app.post('/api/book-appointment', async (req, res) => {
   } catch (error) {
     console.error('Error saving appointment:', error);
     res.status(500).json({ error: 'Failed to book appointment' });
+  }
+});
+
+// API Endpoint: Get All Appointments (GET)
+app.get('/api/appointments', async (req, res) => {
+  try {
+    const appointments = await Appointment.find();
+    res.status(200).json({ data: appointments });
+  } catch (error) {
+    console.error('Error fetching appointments:', error);
+    res.status(500).json({ error: 'Failed to fetch appointments' });
   }
 });
 
